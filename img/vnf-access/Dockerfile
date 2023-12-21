@@ -16,5 +16,5 @@ RUN apt-get update \
     curl \
     nano \
     vim
-
-
+COPY README README
+COPY vnx_config_nat vnx_config_nat

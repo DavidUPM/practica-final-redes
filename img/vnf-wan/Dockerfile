@@ -1,16 +1,9 @@
-FROM      osrg/ryu
-
+FROM prfinal/vnf-access
+# install required packages
 RUN apt-get clean
-RUN	apt-get update && apt-get install -y \
-	net-tools \
-	iproute \
-	inetutils-ping \
-    openvswitch-switch \
-    openvswitch-common \
-    iperf \
-    tcpdump \
-    python-pip \
-    git
+RUN apt-get update \
+    && apt-get install -y \
+    iptables 
+COPY README README
+COPY vnx_config_nat vnx_config_nat
 
-#RUN pip install -r ryu/tools/optional-requires
-RUN git clone https://github.com/martimy/flowmanager

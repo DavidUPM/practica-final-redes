@@ -1,0 +1,29 @@
+## 5. Aplica las reglas de la sdwan con ryu
+echo "## 5. Aplica las reglas de la sdwan con ryu"
+RYU_ADD_URL="http://localhost:$PORTCTRL/stats/flowentry/add"
+curl -X POST -d @json/from-cpe.json $RYU_ADD_URL
+curl -X POST -d @json/to-cpe.json $RYU_ADD_URL
+curl -X POST -d @json/broadcast-from-axs.json $RYU_ADD_URL
+curl -X POST -d @json/from-mpls.json $RYU_ADD_URL
+curl -X POST -d @json/to-voip-gw.json $RYU_ADD_URL
+curl -X POST -d @json/sdedge$NETNUM/to-voip.json $RYU_ADD_URL
+
+## 5. Aplica las reglas en access y cpe
+echo "## 5. Aplica las reglas en access y cpe"
+curl -X POST -d @json_acc/broadcast.json $RYU_ADD_URL
+curl -X POST -d @json_acc/from-sdedge.json $RYU_ADD_URL
+curl -X POST -d @json_acc/to-sdedge.json $RYU_ADD_URL
+
+curl -X POST -d @json_cpe/broadcast.json $RYU_ADD_URL
+curl -X POST -d @json_cpe/from-sdedge.json $RYU_ADD_URL
+curl -X POST -d @json_cpe/to-sdedge.json $RYU_ADD_URL
+
+
+## 5. Aplica las reglas de QOS
+echo "## 5. Aplica las reglas de QOS"
+CONF_OVSDB="http://$IPCTRL:8080/v1.0/conf/switches/0000000000000001/ovsdb_addr"
+curl -X PUT -d "\"tcp:$IPWAN:6632\"" $CONF_OVSDB
+curl -X POST -d @json_qos/qos.json http://$IPCTRL:8080/qos/queue/0000000000000001
+curl -X POST -d @json_qos/to_voipgw.json http://$IPCTRL:8080/qos/rules/0000000000000001
+echo "## VERIFICAMOS CONFIGURACIÒN QOS"
+curl -X GET http://$IPCTRL:8080/qos/rules/0000000000000001
